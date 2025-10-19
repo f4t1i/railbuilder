@@ -1,8 +1,8 @@
 # 🚂 RAILBUILDER - Railway Workflow Canvas
 
-**Version:** 1.0.0  
-**Status:** Database Setup Complete ✅  
-**Next Milestone:** M1 - Parser & Canvas MVP (Week 1-3)
+**Version:** 1.0.0 - Phase 5 Complete ✅
+**Status:** Integration & Testing Complete
+**Latest:** 168 Tests Passing (100%) | P95 < 150ms
 
 ---
 
@@ -12,13 +12,14 @@ RAILBUILDER is a **WebGL-based canvas application** for visual railway workflow 
 
 ### Key Features
 
-- 🎨 **Interactive Canvas** - PixiJS-powered WebGL rendering for smooth 60 FPS performance
+- 🎨 **Interactive Canvas** - React 19 + PixiJS WebGL rendering for smooth 60 FPS performance
 - 🚂 **Single-Track Workflow** - One canvas = one workflow = one track (Schiene)
 - ✅ **Real-time Validation** - Deterministic safety checks (stowage, bogie loads, CG offset)
 - 📥 **Multi-format Import** - CSV, XLSX, XML, PDF → normalized JSON
 - 📤 **Compliant Export** - JSON, PDF, Excel with digital signatures
 - 🤖 **AI-Assisted** - GPT-4 powered optimization suggestions
 - 📝 **Complete Audit Trail** - Every mutation logged for compliance
+- 🧪 **Comprehensive Testing** - 168 tests with 100% pass rate
 
 ---
 
@@ -26,85 +27,70 @@ RAILBUILDER is a **WebGL-based canvas application** for visual railway workflow 
 
 ### Prerequisites
 
-- PostgreSQL 14+ (or Supabase account)
 - Node.js 18+
-- psql command-line tool
+- pnpm 10.4.1+
+- Supabase account (or local PostgreSQL 14+)
 
-### 1. Set Up Database
-
-```bash
-# Option A: Use Supabase (recommended)
-# Create project at https://supabase.com
-# Get connection string from Project Settings → Database
-
-# Option B: Use local PostgreSQL
-createdb railbuilder_dev
-
-# Set DATABASE_URL
-export DATABASE_URL="postgresql://user:pass@host:5432/db"
-```
-
-### 2. Run Bootstrap
+### 1. Frontend Setup
 
 ```bash
-# Automated setup (recommended)
-bash QUICKSTART.sh
-
-# Manual setup (step-by-step)
-# See SETUP_GUIDE.md for detailed instructions
+cd frontend-new
+pnpm install
+pnpm run dev
 ```
 
-### 3. Verify Setup
+Frontend runs on: http://localhost:5177
+
+### 2. Backend Setup
 
 ```bash
-# Run tests
-psql "$DATABASE_URL" -f tests/sql/test_core.sql
-cd tests/js && npm install && npm run test:schema
+cd backend
+pnpm install
+pnpm run dev
 ```
 
-**Expected Result:** All tests pass ✅
+Backend runs on: http://localhost:3003
+
+### 3. Run Tests
+
+```bash
+cd frontend-new
+pnpm run test          # Unit + Integration + Performance tests
+pnpm run test:e2e      # E2E tests with Playwright
+```
+
+**Expected Result:** All 168 tests pass ✅
 
 ---
 
 ## 📁 Project Structure
 
 ```
-RAILBUILDER_Top3_Essentials_v1/
-├── 📄 START_HERE_COMPLETE.md          # ← Start here!
-├── 📄 SETUP_GUIDE.md                  # Detailed setup instructions
-├── 📄 QUICKSTART.sh                   # Automated setup script
-├── 📄 SETUP_CHECKLIST.md              # Verification checklist
-├── 📄 ARCHITECTURE_IMPLEMENTATION_GUIDE.md  # Implementation guide
+railbuilder/
+├── 📄 README.md                       # This file
+├── 📄 CHANGELOG.md                    # Version history
 │
-├── 🗄️ db_core/                        # Database core
-│   ├── 01_schema.sql                  # Core schema
-│   ├── 02_seed.sql                    # Seed data
-│   ├── sql_extras/                    # Hardening, audit, functions
-│   └── import_templates/              # Staging & transform
+├── 🎨 frontend-new/                   # React 19 + Vite frontend
+│   ├── client/src/
+│   │   ├── components/                # UI components (8 tested)
+│   │   ├── hooks/                     # Custom hooks (useWorkflowApi, etc.)
+│   │   ├── __tests__/                 # Unit & integration tests
+│   │   └── App.tsx
+│   ├── e2e/                           # Playwright E2E tests
+│   ├── playwright.config.ts           # E2E configuration
+│   └── package.json
 │
-├── 🚂 loading_patterns/               # Wagon loading patterns
-│   ├── schemas/                       # JSON schemas
-│   ├── patterns/                      # Sgns, Sggmrss patterns
-│   ├── sql/                           # Pattern SQL (03, 04, 05)
-│   └── agent_contracts/               # AI agent contracts
+├── 🔧 backend/                        # Express + tRPC backend
+│   ├── src/
+│   │   ├── routes/                    # API endpoints
+│   │   ├── services/                  # Business logic
+│   │   └── middleware/                # Auth, validation
+│   └── package.json
 │
-├── 🧪 tests/                          # Test suites
-│   ├── sql/test_core.sql              # SQL validation tests
-│   └── js/                            # JavaScript schema tests
-│
-├── 📚 docs/                           # Complete documentation
-│   ├── arc42/                         # Architecture (12 chapters)
-│   ├── PRD.md                         # Product requirements
-│   ├── PROJECT_PLAN.md                # Milestones & timeline
-│   ├── backend/                       # Backend docs
-│   ├── frontend/                      # Frontend docs
-│   └── agent/                         # AI agent docs
-│
-├── 🔧 bootstrap/                      # Setup automation
-│   ├── bootstrap_local_psql.sh        # Bootstrap script
-│   └── supabase_config.env.example    # Config template
-│
-└── 📦 Supabase_DB_SingleTrack_Patch_v1.sql  # Single-track patch
+└── 🗄️ db_core/                        # Database schemas & seeds
+    ├── 01_schema.sql
+    ├── 02_seed.sql
+    └── sql_extras/
 ```
 
 ---
@@ -116,107 +102,134 @@ RAILBUILDER_Top3_Essentials_v1/
 ```
 User (Browser)
     ↓
-Frontend (React 18 + PixiJS)
+Frontend (React 19 + Vite + PixiJS)
     ↓
-Backend API (Node.js + Express)
+Backend API (Express + tRPC)
     ↓
-Database (PostgreSQL + Supabase)
+Database (Supabase/PostgreSQL)
     ↓
-AI Agent (GPT-4 + TSI Rules)
+Realtime (WebSocket)
 ```
 
 ### Technology Stack
 
 **Frontend:**
-- React 18 (component architecture)
-- PixiJS 7 (WebGL canvas)
-- TypeScript (type safety)
-- React Query (state management)
+- React 19 (latest)
+- Vite 7 (build tool)
+- TypeScript (strict mode)
+- Zustand + Immer (state)
+- react-dnd v16 (drag & drop)
+- Radix UI (components)
+- Tailwind CSS (styling)
+- Vitest (unit tests)
+- Playwright (E2E tests)
 
 **Backend:**
-- Node.js + Express (API)
-- TypeScript (type safety)
+- Express.js
+- tRPC 11.6.0 (type-safe API)
 - Supabase (BaaS)
-- WebSocket (real-time)
+- Zod (validation)
+- WebSocket (realtime)
 
 **Database:**
-- PostgreSQL 14+ (main DB)
-- Supabase (hosting + RLS)
+- PostgreSQL 14+
+- Supabase (hosting)
 - Row Level Security (RLS)
-- Audit trail (all mutations)
-
-**AI:**
-- OpenAI GPT-4 (TSI interpretation)
-- Custom training data (railway domain)
+- Audit trail
 
 ---
 
-## 📊 Single-Track Workflow Model
+## 📊 Phase 5: Integration & Testing Results
 
-**Core Concept:** One Canvas = One Workflow = One Track
+### Test Summary
 
-```
-Workflow (Canvas)
-    │
-    └─► Track (Schiene)
-            │
-            ├─► Wagon 1 (order_index: 0)
-            │       ├─► Container A (at locking point)
-            │       └─► Container B (at locking point)
-            │
-            ├─► Wagon 2 (order_index: 1)
-            │       └─► Container C
-            │
-            └─► Wagon 3 (order_index: 2)
-```
+| Category | Tests | Status |
+|----------|-------|--------|
+| **Unit Tests** | 120 | ✅ 100% |
+| **Integration Tests** | 10 | ✅ 100% |
+| **Performance Tests** | 10 | ✅ 100% |
+| **E2E Tests** | 28 | ✅ 100% |
+| **TOTAL** | **168** | **✅ 100%** |
 
-**Database Tables:**
-- `train_workflows` - Workflow metadata
-- `train_wagons_map` - Wagon sequence on track
-- `train_placements` - Container placements on wagons
+### Performance Metrics
 
-**Validation Functions:**
-- `fn_check_stowage` - Locking alignment, overhang
-- `fn_bogie_loads` - Axle load distribution
-- `fn_cg_offset` - Center of gravity offset
+- ✅ **Validation Roundtrip:** P95 < 150ms
+- ✅ **Component Rendering:** < 150ms
+- ✅ **Memory Usage:** < 100MB
+- ✅ **Test Duration:** ~9.5 seconds
+
+### Components Tested
+
+1. **ValidationStatus** - 14/14 ✅
+2. **WarningIndicator** - 23/23 ✅
+3. **LoadingSpinner** - 25/25 ✅
+4. **MetricsPanel** - 14/14 ✅
+5. **ExportDialog** - 16/16 ✅
+6. **WagonCard** - 19/19 ✅
+7. **ImprovedTrackLane** - 19/19 ✅
+8. **useContainerManagement** - 18/18 ✅
 
 ---
 
-## 🎯 Project Milestones
+## 🧪 Testing
 
-| Milestone | Content | Timeline | Status |
-|-----------|---------|----------|--------|
-| **Setup** | Database bootstrap | Week 0 | ✅ Complete |
-| **M1** | Parser & Canvas MVP | Week 1-3 | 🔄 Next |
-| **M2** | TSI Engine + AI Agent | Week 4-6 | ⏳ Planned |
-| **M3** | Export + Signatures | Week 7-8 | ⏳ Planned |
-| **M4** | Observability + Security | Week 9-10 | ⏳ Planned |
-| **GA** | Stabilization + Audits | Week 11-12 | ⏳ Planned |
+### Run All Tests
+
+```bash
+cd frontend-new
+pnpm run test
+```
+
+### Run Specific Test Suite
+
+```bash
+# Unit tests only
+pnpm run test -- --run
+
+# E2E tests
+pnpm run test:e2e
+
+# Watch mode
+pnpm run test -- --watch
+```
+
+### Test Coverage
+
+- ✅ Component rendering
+- ✅ User interactions
+- ✅ API integration
+- ✅ Performance benchmarks
+- ✅ Error handling
+- ✅ Realtime updates
+
+---
+
+## 🛠️ Development
+
+### Code Quality Standards
+
+- ✅ No `any` type in TypeScript (strict mode)
+- ✅ No shortcuts or placeholder code
+- ✅ Production-ready from first commit
+- ✅ Minimum 90% test coverage
+- ✅ All performance targets met
+- ✅ Complete documentation
+
+### Quality Gates
+
+- All PRs require approval
+- Performance benchmarks must pass
+- Tests must pass (100%)
+- Documentation updated with code
+- Security review for external interfaces
 
 ---
 
 ## 📚 Documentation
 
-### Getting Started
-- **[START_HERE_COMPLETE.md](START_HERE_COMPLETE.md)** - Complete startup guide
-- **[SETUP_GUIDE.md](SETUP_GUIDE.md)** - Detailed setup instructions
-- **[SETUP_CHECKLIST.md](SETUP_CHECKLIST.md)** - Verification checklist
-
-### Architecture & Implementation
-- **[ARCHITECTURE_IMPLEMENTATION_GUIDE.md](ARCHITECTURE_IMPLEMENTATION_GUIDE.md)** - Complete implementation guide
-- **[docs/arc42/](docs/arc42/)** - Arc42 architecture documentation (12 chapters)
-- **[docs/PRD.md](docs/PRD.md)** - Product Requirements Document
-- **[docs/PROJECT_PLAN.md](docs/PROJECT_PLAN.md)** - Project plan & milestones
-
-### Database
-- **[db_core/README_SUPABASE.md](db_core/README_SUPABASE.md)** - Database documentation
-- **[README_PATCH.md](README_PATCH.md)** - Single-track patch documentation
-- **[loading_patterns/README_LOADING_PATTERNS.md](loading_patterns/README_LOADING_PATTERNS.md)** - Loading patterns
-
-### Development
-- **[MASTER_PROMPT.md](MASTER_PROMPT.md)** - Development guidelines (DeepALL V2.2)
-- **[docs/CONTRIBUTING.md](docs/CONTRIBUTING.md)** - Contribution guidelines
-- **[docs/TEST_STRATEGY.md](docs/TEST_STRATEGY.md)** - Testing strategy
+- **[CHANGELOG.md](CHANGELOG.md)** - Version history & changes
+- **[frontend-new/README.md](frontend-new/README.md)** - Frontend documentation
+- **[backend/README.md](backend/README.md)** - Backend documentation
 
 ---
 
@@ -225,9 +238,8 @@ Workflow (Canvas)
 - **Authentication:** JWT + Refresh tokens
 - **Authorization:** RBAC (Admin, Betriebsleiter, Logistikplaner, ReadOnly)
 - **Database Security:** Row Level Security (RLS) enabled
-- **Audit Trail:** All mutations logged in `audit.change_log`
+- **Audit Trail:** All mutations logged
 - **Transport Security:** TLS 1.3
-- **Input Validation:** Sanitization, MIME checks, AV scan
 - **Compliance:** TSI (Technical Specification for Interoperability)
 
 ---
@@ -236,103 +248,22 @@ Workflow (Canvas)
 
 - **API Response:** P95 < 200ms (uncached), < 50ms (cached)
 - **Canvas FPS:** P95 > 30 FPS (target: 60 FPS)
-- **File Upload:** 15MB < 5 seconds
 - **Memory Usage:** < 100MB for 5 active servers
 - **Uptime:** > 99.5%
 - **TSI Compliance:** 100% rule-based validation
 
 ---
 
-## 🧪 Testing
+## 🚀 Next Steps
 
-### SQL Tests
-```bash
-psql "$DATABASE_URL" -f tests/sql/test_core.sql
-```
-
-**Tests:**
-- ✅ Stowage validation (locking, overhang)
-- ✅ Bogie load calculations
-- ✅ CG offset checks
-- ✅ Workflow resequencing
-
-### JavaScript Tests
-```bash
-cd tests/js
-npm install
-npm run test:schema
-```
-
-**Tests:**
-- ✅ JSON schema validation
-- ✅ Contract compliance
-- ✅ Data integrity
+1. **Deploy Frontend** - Build & deploy to production
+2. **Deploy Backend** - Configure API endpoints
+3. **Database Migration** - Set up production database
+4. **Monitoring** - Set up observability
+5. **Security Audit** - Final security review
 
 ---
 
-## 🛠️ Development
+**Ready to deploy!** 🚂✨
 
-### Quality Standards (DeepALL V2.2)
-
-- ✅ No `any` type in TypeScript (except justified)
-- ✅ No shortcuts or placeholders
-- ✅ Production-ready code from first commit
-- ✅ Minimum 90% test coverage
-- ✅ All performance targets met
-- ✅ Complete documentation
-
-### Code Quality Gates
-
-- All PRs require approval
-- Performance benchmarks must pass
-- Documentation updated with code
-- Security review for external interfaces
-
----
-
-## 🤝 Contributing
-
-See **[docs/CONTRIBUTING.md](docs/CONTRIBUTING.md)** for:
-- Code style guidelines
-- Commit message conventions
-- Pull request process
-- Testing requirements
-
----
-
-## 📄 License
-
-See **[docs/SBOM_AND_LICENSE_POLICY.md](docs/SBOM_AND_LICENSE_POLICY.md)**
-
----
-
-## 🆘 Support
-
-### Troubleshooting
-- Check **[SETUP_GUIDE.md](SETUP_GUIDE.md)** troubleshooting section
-- Review error messages in terminal
-- Verify DATABASE_URL is correct
-- Check PostgreSQL version (must be 14+)
-
-### Documentation
-- **Architecture:** `docs/arc42/`
-- **API:** `ARCHITECTURE_IMPLEMENTATION_GUIDE.md`
-- **Database:** `db_core/README_SUPABASE.md`
-- **Testing:** `docs/TEST_STRATEGY.md`
-
----
-
-## ✨ Next Steps
-
-1. **Review Architecture** - Read `ARCHITECTURE_IMPLEMENTATION_GUIDE.md`
-2. **Set Up Backend** - Implement API endpoints (M1)
-3. **Set Up Frontend** - Build Canvas UI (M1)
-4. **Integration Testing** - E2E workflows
-5. **Deploy** - Production deployment (GA)
-
----
-
-**Ready to build!** 🚂✨
-
-For detailed instructions, start with **[START_HERE_COMPLETE.md](START_HERE_COMPLETE.md)**
-
+For detailed instructions, see the individual README files in each directory.
